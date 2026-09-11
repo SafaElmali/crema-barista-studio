@@ -10,7 +10,11 @@ Serve `dist` with a static server, for example:
 python3 -m http.server 4334 --bind 127.0.0.1 --directory dist
 ```
 
-Open http://127.0.0.1:4334/. The site has no build step, account requirement for local use, or third-party runtime asset requests. The hosted version is owner-private through Sites.
+Open http://127.0.0.1:4334/. The site has no compilation step, account requirement for local use, or third-party runtime asset requests.
+
+## Deploy to Netlify
+
+`netlify.toml` configures the `dist` publishing directory and runs the animation clearance tests before a repository build. The project has no package dependencies. For a manual deployment from a linked checkout, run `netlify deploy --prod --dir dist`. The original owner-private Sites deployment is independent of Netlify.
 
 ## Model and teaching approach
 
