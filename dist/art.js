@@ -1,0 +1,145 @@
+export const clamp = (x, a = 0, b = 1) => Math.min(b, Math.max(a, x));
+export const smooth = (a, b, x) => { const t = clamp((x - a) / (b - a)); return t * t * (3 - 2 * t); };
+export const lerp = (a, b, t) => a + (b - a) * t;
+
+// The surface is a teaching illustration parameterized by the same pour clock
+// as the pitcher. Scrubbing can reconstruct any frame without simulation drift.
+const base = document.createElement('canvas');
+base.width = base.height = 1024;
+const bc = base.getContext('2d');
+const milkLayer = document.createElement('canvas');milkLayer.width=milkLayer.height=1024;
+const milkCtx = milkLayer.getContext('2d');
+const grainLayer = document.createElement('canvas');grainLayer.width=grainLayer.height=1024;
+const gc = grainLayer.getContext('2d');
+const pixels = bc.createImageData(1024, 1024);
+let seed = 271828;
+const rand = () => { seed = (Math.imul(seed, 1664525) + 1013904223) >>> 0; return seed / 4294967296; };
+for (let y = 0; y < 1024; y++) for (let x = 0; x < 1024; x++) {
+  const u = (x - 512) / 512, v = (y - 512) / 512, r = Math.hypot(u, v), a = Math.atan2(v, u);
+  const swirl = Math.sin(r * 47 + a * 2 + Math.sin(a * 5 + r * 13) * 1.7);
+  const wisps = Math.sin(r * 130 + a * 6 + Math.sin(a * 8 + r * 19) * 2);
+  const cloud = Math.sin(u * 9 + Math.sin(v * 5)) * Math.sin(v * 11 + u * 4);
+  const grain = (rand() - .5) * 9;
+  const edge = Math.exp(-Math.pow((r - .955) / .035, 2)) * 25;
+  const n = swirl * 3.4 + wisps * 1.2 + cloud * 5 + grain + edge;
+  const i = (y * 1024 + x) * 4;
+  pixels.data[i] = 133 + n; pixels.data[i + 1] = 68 + n * .77; pixels.data[i + 2] = 30 + n * .48; pixels.data[i + 3] = 255;
+}
+bc.putImageData(pixels, 0, 0);
+const gi=gc.createImageData(1024,1024);
+for(let i=0;i<gi.data.length;i+=4){const n=rand();gi.data[i]=212+n*40;gi.data[i+1]=193+n*44;gi.data[i+2]=159+n*57;gi.data[i+3]=40+rand()*45;}
+gc.putImageData(gi,0,0);
+for(let i=0;i<2400;i++){const x=rand()*1024,y=rand()*1024,r=.2+rand()*.55;gc.beginPath();gc.arc(x,y,r,0,Math.PI*2);gc.strokeStyle='rgba(151,119,65,.12)';gc.lineWidth=.4;gc.stroke();}
+for (let i = 0; i < 1650; i++) {
+  const a = rand() * Math.PI * 2, r = (.88 + rand() * .113) * 512;
+  const x = 512 + Math.sin(a) * r, y = 512 + Math.cos(a) * r, size = .3 + rand() * 2;
+  bc.beginPath(); bc.arc(x, y, size, 0, Math.PI * 2);
+  bc.fillStyle = `rgba(240,199,138,${.1 + rand() * .23})`; bc.fill();
+  if (size > 1.2) { bc.strokeStyle = '#53351635'; bc.lineWidth = .55; bc.stroke(); }
+}
+
+function heart(ctx, x, y, size, morph = 1) {
+  ctx.beginPath();
+  // Morph a milk pool into the heart as the thin finishing stream pulls through.
+  for (let i = 0; i <= 180; i++) {
+    const t = i / 180 * Math.PI * 2;
+    const hx = Math.pow(Math.sin(t), 3);
+    const hy = -(13 * Math.cos(t) - 5 * Math.cos(2 * t) - 2 * Math.cos(3 * t) - Math.cos(4 * t)) / 16;
+    const px = x + lerp(Math.sin(t) * .9, hx, morph) * size;
+    const py = y + lerp(-Math.cos(t) * .78, hy, morph) * size;
+    i ? ctx.lineTo(px, py) : ctx.moveTo(px, py);
+  }
+  ctx.closePath(); ctx.fill();
+}
+function petal(ctx, x, y, w, h, curl = .65) {
+  ctx.beginPath();ctx.moveTo(x - w, y - h * .25);
+  ctx.bezierCurveTo(x - w * 1.17, y + h * .72, x - w * .36, y + h, x, y + h * .92);
+  ctx.bezierCurveTo(x + w * .36, y + h, x + w * 1.17, y + h * .72, x + w, y - h * .25);
+  ctx.bezierCurveTo(x + w * .57, y + h * curl, x + w * .34, y + h * .05, x, y + h * .13);
+  ctx.bezierCurveTo(x - w * .34, y + h * .05, x - w * .57, y + h * curl, x - w, y - h * .25);
+  ctx.closePath();ctx.fill();
+}
+export function pourPose(pattern, p) {
+  const draw = clamp((p - .35) / .44), cut = smooth(.8, .925, p);
+  let x = 0, z = 0, flow = 0, height = .8;
+  if (p >= .075 && p < .3) { const t = (p - .075) / .225; x = Math.sin(t * Math.PI * 4) * .12; z = Math.cos(t * Math.PI * 4) * .12; flow = .014; }
+  else if (p >= .3 && p < .8) {
+    height = lerp(.8, .065, smooth(.3, .36, p)); flow = lerp(.014, .033, smooth(.32, .4, p));
+    if (pattern === 'heart') { z = -.2; }
+    if (pattern === 'tulip') { const cycle = clamp((p - .35) / .44) * 4; const l = Math.min(3, Math.floor(cycle)); const f = cycle - l; z = .24 - l * .20 - .035 * Math.sin(f * Math.PI); flow *= f > .84 ? 0 : smooth(0, .1, f); }
+    if (pattern === 'rosetta') { z = lerp(.43, -.55, draw); x = Math.sin(draw * Math.PI * 18) * lerp(.20, .045, draw); }
+  }
+  else if (p >= .8 && p < .93) { height = lerp(.065, .40, smooth(.8, .83, p)); flow = .011; z = lerp(pattern === 'heart' ? -.2 : -.53, .64, cut); }
+  return {x,z,height,flow,draw,cut};
+}
+export function drawArt(ctx, size, pattern, p, finished = false) {
+  const progress = finished ? 1 : p;
+  ctx.clearRect(0, 0, size, size); ctx.drawImage(base, 0, 0, size, size);
+  const output=ctx;
+  ctx=milkCtx;ctx.clearRect(0,0,1024,1024);
+  ctx.save();ctx.translate(size / 2, size / 2);ctx.scale(size / 2, size / 2);
+  const blend = smooth(.08, .31, progress);
+  ctx.fillStyle = `rgba(211,154,91,${blend * .07})`;ctx.fillRect(-1,-1,2,2);
+  const cream = ctx.createLinearGradient(-.35,-.7,.45,.7);
+  cream.addColorStop(0,'#fff9e8');cream.addColorStop(.45,'#f6edd5');cream.addColorStop(1,'#ecdcbb');
+  ctx.fillStyle = cream;ctx.shadowColor='#fff6d5';ctx.shadowBlur=size*.0011;
+  const morph = smooth(.8,.925,progress);
+  if (pattern === 'heart') {
+    const grow = smooth(.345,.78,progress);
+    if(grow>0) {
+      const s=Math.sqrt(grow)*.61,y=lerp(-.18,-.02,grow);
+      ctx.save();ctx.globalAlpha=.25;heart(ctx,0,y,s*1.07,morph);ctx.restore();
+      ctx.save();ctx.fillStyle='#b57d44';heart(ctx,0,y,s*1.035,morph);ctx.restore();
+      heart(ctx,0,y,s,morph);
+      if(grow>.6){
+        ctx.save();ctx.strokeStyle='#cfa86e';ctx.globalAlpha=.33;ctx.lineWidth=.004;
+        for(let k=0;k<4;k++){ctx.beginPath();ctx.ellipse(0,y-.06,s*(.94-k*.025),s*(.72-k*.024),0,.19,Math.PI-.19);ctx.stroke();}
+        ctx.restore();
+      }
+    }
+  } else if(pattern === 'tulip') {
+    const phase = clamp((progress-.35)/.44)*4;
+    for(let i=0;i<4;i++) {
+      const growth=smooth(0,.8,phase-i); if(growth<=0)continue;
+      const pushed=smooth(.85,1.6,phase-i);
+      const z=.24-i*.20;
+      if(i===3)heart(ctx,0,z,.20*Math.sqrt(growth),Math.max(pushed,morph));
+      else if(pushed<.01){heart(ctx,0,z,.34*Math.sqrt(growth),0);}
+      else{
+        const w=(.60-i*.105)*Math.sqrt(growth);
+        petal(ctx,0,z,w,.25,lerp(.3,.64,pushed));
+        ctx.save();ctx.globalAlpha=.5;ctx.strokeStyle='#c99b58';ctx.lineWidth=.008;
+        ctx.beginPath();ctx.ellipse(0,z+.045,w*.85,.15,0,.15,Math.PI-.15);ctx.stroke();ctx.restore();
+      }
+    }
+  } else {
+    const phase=clamp((progress-.35)/.44)*9;
+    for(let i=0;i<9;i++){
+      const growth=smooth(0,.85,phase-i);if(growth<=0)continue;
+      const z=.43-i*.109,w=[.46,.56,.58,.55,.49,.40,.30,.20,.105][i]*Math.sqrt(growth);
+      for(const side of [-1,1]){
+        ctx.beginPath();ctx.moveTo(0,z+.045);
+        ctx.bezierCurveTo(side*w*.45,z+.08,side*w*1.03,z+.03,side*w,z-.10);
+        ctx.bezierCurveTo(side*w*.82,z-.01,side*w*.43,z+.002,0,z);
+        ctx.closePath();ctx.fill();
+      }
+    }
+    const crown=smooth(8.6,9,phase);if(crown>0)heart(ctx,0,-.53,.13*crown,1);
+  }
+  if(morph>0 && pattern!=='heart'){
+    ctx.lineWidth=.020;ctx.lineCap='round';ctx.strokeStyle='#fbf1d8';ctx.beginPath();
+    ctx.moveTo(0,-.51);ctx.lineTo(0,lerp(-.51,.62,morph));ctx.stroke();
+  }
+  const pose=pourPose(pattern,progress);
+  if(pose.flow && progress<.35){
+    for(let i=0;i<3;i++){
+      const r=((progress*8+i*.23)% .7);
+      ctx.beginPath();ctx.ellipse(pose.x,pose.z,r,r*.96,0,0,Math.PI*2);
+      ctx.lineWidth=.004;ctx.strokeStyle=`rgba(235,195,133,${(1-r/.7)*.22})`;ctx.stroke();
+    }
+  }
+  ctx.restore();
+  ctx.save();ctx.globalCompositeOperation='source-atop';ctx.drawImage(grainLayer,0,0,size,size);ctx.restore();
+  output.drawImage(milkLayer,0,0,size,size,0,0,size,size);
+}
+export function thumbnail(pattern) { const c=document.createElement('canvas');c.width=c.height=192;drawArt(c.getContext('2d'),192,pattern,1,true);return c.toDataURL(); }

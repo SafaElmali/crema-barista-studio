@@ -1,0 +1,41 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#f6f4ef" />
+  <title>Crema — The Latte Art Studio</title>
+  <meta name="description" content="Learn the art of the pour. Explore animated 3D lessons for the heart, tulip and rosetta, with slow motion and step-by-step guidance." />
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 40 40'%3E%3Crect width='40' height='40' rx='12' fill='%232c473b'/%3E%3Cpath d='M20 29C2 18 13 8 20 16C27 8 38 18 20 29Z' fill='%23f6f4ef'/%3E%3C/svg%3E" />
+  <link rel="stylesheet" href="./style.css" />
+  <script type="importmap">{"imports":{"three":"./vendor/three.module.js"}}</script>
+</head>
+<body>
+  <header class="site-header">
+    <a href="./" class="brand" aria-label="Crema home">crema<span>®</span></a>
+    <div class="header-center"><span class="tiny-flower" aria-hidden="true">✳</span> THE LATTE ART STUDIO</div>
+    <button class="text-button" id="open-basics">Before you pour <span aria-hidden="true">↗</span></button>
+  </header>
+  <main>
+    <div class="page-intro"><div><p class="eyebrow">WATCH. UNDERSTAND. POUR.</p><h1>Good things take a little practice.</h1></div><p>One cup. Three classics.<br>Find your flow, one pour at a time.</p></div>
+    <div class="studio-layout">
+      <aside class="patterns-panel" aria-label="Choose a latte art lesson"><div class="panel-label"><span>CHOOSE YOUR PATTERN</span><span>03</span></div><div id="patterns"></div><div class="sidebar-note"><span class="note-star" aria-hidden="true">✳</span><p>Start with a heart.<br>Everything grows from here.</p></div></aside>
+      <section class="viewer-panel" aria-label="Interactive 3D latte art tutorial">
+        <div class="stage" id="stage">
+          <canvas id="scene" aria-label="3D ceramic coffee cup and milk pitcher. Use the view buttons to change perspective." tabindex="0"></canvas>
+          <div class="stage-top"><div><span class="eyebrow">THE POURING ROOM</span><span class="scene-name" id="scene-name">The heart</span></div><div class="live-label"><span></span> INTERACTIVE 3D</div></div>
+          <div class="camera-controls" role="group" aria-label="Camera angle"><button data-camera="studio" class="selected" aria-pressed="true">Studio</button><button data-camera="top" aria-pressed="false">Top view</button><button data-camera="close" aria-pressed="false">Close-up</button></div>
+          <div id="loading" class="loading"><span class="loading-ring"></span><span>Preparing your coffee…</span></div>
+          <div class="pour-callout" id="pour-callout" hidden><span id="callout-kicker">01 / BUILD THE BASE</span><p id="callout-text">Start high. Pour gently.</p></div>
+          <div class="stage-bottom"><span id="orbit-hint"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12a8 4 0 1 0 2-3M4 5v5h5"/></svg> Drag to explore</span><button id="reset-view" aria-label="Reset camera view" title="Reset camera view"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 10a8 8 0 1 1 2 8M4 4v6h6"/></svg></button></div>
+        </div>
+        <div class="player"><div class="player-row"><button id="play" class="play-button" disabled><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m9 5 10 7-10 7Z"/></svg><span>Start tutorial</span></button><button id="replay" class="icon-button" title="Replay tutorial" aria-label="Replay tutorial"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 10a8 8 0 1 1 2 8M4 4v6h6"/></svg></button><span id="time-display" class="time-display">0:00 <span>/ 0:26</span></span><label class="speed-control"><span>Speed</span><select id="speed" aria-label="Playback speed"><option value="0.25">0.25×</option><option value="0.5">0.5×</option><option value="1" selected>1×</option></select></label></div><label class="sr-only" for="timeline">Tutorial progress</label><input id="timeline" class="timeline" type="range" min="0" max="26" step="0.01" value="0" /><div class="timeline-labels"><span>BASE</span><span>GET CLOSE</span><span>SHAPE</span><span>FINISH</span></div></div>
+      </section>
+      <aside class="lesson-panel" aria-label="Tutorial instructions"><div class="lesson-heading"><span class="eyebrow">YOUR POUR, EXPLAINED</span><span id="lesson-number">LESSON 01</span></div><h2 id="lesson-title">The heart</h2><p id="lesson-description" class="lesson-description"></p><div class="lesson-meta"><span id="difficulty"></span><span id="duration"></span></div><div id="steps" class="steps"></div><div class="coach-note"><div><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 18h6m-5 3h4M8 14a6 6 0 1 1 8 0c-1 1-1 2-1 2H9s0-1-1-2Z"/></svg><span>THE LITTLE THING THAT HELPS</span></div><p id="coach-tip"></p></div></aside>
+    </div>
+    <div class="studio-footer"><span><i aria-hidden="true">✳</i> A good pour starts with good microfoam.</span><span>Take it slow. Make it yours.</span></div>
+  </main>
+  <dialog id="basics"><div class="dialog-header"><span class="eyebrow">A BETTER START</span><button id="close-basics" class="icon-button" aria-label="Close preparation guide">✕</button></div><h2>Before the first pour.</h2><p class="dialog-intro">A few small details make a big difference.</p><div class="basics-grid"><section><span>01</span><h3>Set up your canvas</h3><p>Use fresh espresso in a wide, rounded cup. Give it a gentle swirl for an even crema. A 200–250 ml cup and a 350 ml pitcher are a practical starting setup.</p></section><section><span>02</span><h3>Make silky microfoam</h3><p>Start with cold milk. Add a little air, then keep the milk circulating to integrate the bubbles. Aim for glossy, fluid milk with no dry foam cap. Swirl and pour promptly.</p></section><section><span>03</span><h3>Hold, tilt, level</h3><p>Tilt the cup toward your pitcher to reach the surface. As the drink fills, gradually bring the cup level. Keep the spout aligned with the center of your design.</p></section><section><span>04</span><h3>Let height do the work</h3><p>A higher, narrow stream blends into espresso. A spout within 1 cm of the surface lets white foam spread. Lift and thin the stream to finish your design.</p></section></div><div class="troubleshooting"><h3>If your pour isn’t quite there</h3><p><b>No white pattern?</b> Lower the spout and check your milk texture.</p><p><b>A thick white blob?</b> Use less air when steaming; keep the milk moving.</p><p><b>No sharp point?</b> Lift before you draw the final thin line through.</p></div><div class="source-note">These are guided 3D demonstrations of pitcher technique; actual milk flow varies with texture, cup angle and practice. Animation timing is for learning.<br><br>Technique references: <a href="https://www.lamarzocco.com/uk/en/how-to-pour-latte-art/" target="_blank" rel="noopener noreferrer">La Marzocco</a>, <a href="https://www.baristahustle.com/lesson/b1-5-02-the-second-half/" target="_blank" rel="noopener noreferrer">Barista Hustle</a> and <a href="https://www.onlinebaristatraining.com/resources/latte-art-for-beginners-how-to-pour-a-heart-tulip-rosetta/" target="_blank" rel="noopener noreferrer">Online Barista Training</a>.</div></dialog>
+  <script type="module" src="./app.js"></script>
+</body>
+</html>
