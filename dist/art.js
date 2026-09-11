@@ -1,6 +1,5 @@
-export const clamp = (x, a = 0, b = 1) => Math.min(b, Math.max(a, x));
-export const smooth = (a, b, x) => { const t = clamp((x - a) / (b - a)); return t * t * (3 - 2 * t); };
-export const lerp = (a, b, t) => a + (b - a) * t;
+import {clamp, smooth, lerp, pourPose} from './motion.js';
+export {clamp, smooth, lerp} from './motion.js';
 
 // The surface is a teaching illustration parameterized by the same pour clock
 // as the pitcher. Scrubbing can reconstruct any frame without simulation drift.
@@ -59,19 +58,6 @@ function petal(ctx, x, y, w, h, curl = .65) {
   ctx.bezierCurveTo(x - w * .34, y + h * .05, x - w * .57, y + h * curl, x - w, y - h * .25);
   ctx.closePath();ctx.fill();
 }
-export function pourPose(pattern, p) {
-  const draw = clamp((p - .35) / .44), cut = smooth(.8, .925, p);
-  let x = 0, z = 0, flow = 0, height = .8;
-  if (p >= .075 && p < .3) { const t = (p - .075) / .225; x = Math.sin(t * Math.PI * 4) * .12; z = Math.cos(t * Math.PI * 4) * .12; flow = .014; }
-  else if (p >= .3 && p < .8) {
-    height = lerp(.8, .065, smooth(.3, .36, p)); flow = lerp(.014, .033, smooth(.32, .4, p));
-    if (pattern === 'heart') { z = -.2; }
-    if (pattern === 'tulip') { const cycle = clamp((p - .35) / .44) * 4; const l = Math.min(3, Math.floor(cycle)); const f = cycle - l; z = .24 - l * .20 - .035 * Math.sin(f * Math.PI); flow *= f > .84 ? 0 : smooth(0, .1, f); }
-    if (pattern === 'rosetta') { z = lerp(.43, -.55, draw); x = Math.sin(draw * Math.PI * 18) * lerp(.20, .045, draw); }
-  }
-  else if (p >= .8 && p < .93) { height = lerp(.065, .40, smooth(.8, .83, p)); flow = .011; z = lerp(pattern === 'heart' ? -.2 : -.53, .64, cut); }
-  return {x,z,height,flow,draw,cut};
-}
 export function drawArt(ctx, size, pattern, p, finished = false) {
   const progress = finished ? 1 : p;
   ctx.clearRect(0, 0, size, size); ctx.drawImage(base, 0, 0, size, size);
@@ -83,7 +69,7 @@ export function drawArt(ctx, size, pattern, p, finished = false) {
   const cream = ctx.createLinearGradient(-.35,-.7,.45,.7);
   cream.addColorStop(0,'#fff9e8');cream.addColorStop(.45,'#f6edd5');cream.addColorStop(1,'#ecdcbb');
   ctx.fillStyle = cream;ctx.shadowColor='#fff6d5';ctx.shadowBlur=size*.0011;
-  const morph = smooth(.8,.925,progress);
+  const morph = smooth(.812,.925,progress);
   if (pattern === 'heart') {
     const grow = smooth(.345,.78,progress);
     if(grow>0) {
@@ -104,12 +90,14 @@ export function drawArt(ctx, size, pattern, p, finished = false) {
       const pushed=smooth(.85,1.6,phase-i);
       const z=.24-i*.20;
       if(i===3)heart(ctx,0,z,.20*Math.sqrt(growth),Math.max(pushed,morph));
-      else if(pushed<.01){heart(ctx,0,z,.34*Math.sqrt(growth),0);}
       else{
+        ctx.save();ctx.globalAlpha=1-pushed;heart(ctx,0,z,.34*Math.sqrt(growth),0);ctx.restore();
+        ctx.save();ctx.globalAlpha=pushed;
         const w=(.60-i*.105)*Math.sqrt(growth);
         petal(ctx,0,z,w,.25,lerp(.3,.64,pushed));
-        ctx.save();ctx.globalAlpha=.5;ctx.strokeStyle='#c99b58';ctx.lineWidth=.008;
+        ctx.save();ctx.globalAlpha*=.5;ctx.strokeStyle='#c99b58';ctx.lineWidth=.008;
         ctx.beginPath();ctx.ellipse(0,z+.045,w*.85,.15,0,.15,Math.PI-.15);ctx.stroke();ctx.restore();
+        ctx.restore();
       }
     }
   } else {

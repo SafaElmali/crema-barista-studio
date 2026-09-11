@@ -1,7 +1,9 @@
 import * as T from 'three';
 import { OrbitControls } from './vendor/OrbitControls.js';
 import { RGBELoader } from './vendor/RGBELoader.js';
-import { drawArt, pourPose, clamp, smooth, lerp } from './art.js';
+import { drawArt } from './art.js';
+import { clamp, smooth, lerp, insideRadius, cupPose, pitcherPose, SPOUT } from './motion.js';
+import { cupProfile, pitcherGeometry } from './vessel-geometry.js';
 
 export async function createScene(canvas) {
   const renderer = new T.WebGLRenderer({canvas,antialias:true,alpha:true,powerPreference:'high-performance'});
@@ -43,7 +45,7 @@ export async function createScene(canvas) {
   const saucerP=new T.Path();saucerP.moveTo(0,.055);saucerP.lineTo(.58,.055);saucerP.bezierCurveTo(.9,.055,1.21,.10,1.43,.19);saucerP.quadraticCurveTo(1.51,.23,1.49,.26);saucerP.quadraticCurveTo(1.47,.285,1.43,.268);saucerP.bezierCurveTo(1.08,.14,.86,.15,.62,.13);saucerP.lineTo(0,.13);lathe(saucerP,ceramic);
   const foot=mesh(new T.TorusGeometry(.65,.023,16,128),innerCeramic);foot.rotation.x=Math.PI/2;foot.position.y=.15;
   const cup=new T.Group();cup.position.y=.14;model.add(cup);
-  const body=new T.Path();body.moveTo(0,0);body.lineTo(.44,0);body.quadraticCurveTo(.55,0,.59,.10);body.bezierCurveTo(.68,.23,.92,.52,1.006,.94);body.quadraticCurveTo(1.045,1.075,1.022,1.105);body.quadraticCurveTo(1.002,1.139,.978,1.10);body.bezierCurveTo(.9,.7,.65,.27,.50,.18);body.quadraticCurveTo(.46,.14,.40,.14);body.lineTo(0,.14);lathe(body,ceramic,cup);
+  lathe(cupProfile(),ceramic,cup);
   const lip=mesh(new T.TorusGeometry(1.006,.017,24,180),innerCeramic,cup);lip.position.y=1.097;lip.rotation.x=Math.PI/2;
   const handle=tube([[.87,.9,0],[1.2,.94,0],[1.47,.74,0],[1.47,.50,0],[1.27,.31,0],[.7,.28,0]],.086,ceramic,cup);
   handle.scale.z=.86;
@@ -52,22 +54,20 @@ export async function createScene(canvas) {
   const ctx=liquidCanvas.getContext('2d');const liquidTexture=new T.CanvasTexture(liquidCanvas);liquidTexture.colorSpace=T.SRGBColorSpace;liquidTexture.anisotropy=Math.min(8,renderer.capabilities.getMaxAnisotropy());
   const liquidMat=new T.MeshPhysicalMaterial({map:liquidTexture,roughness:.31,clearcoat:.35,clearcoatRoughness:.32,metalness:0,bumpMap:bump,bumpScale:.0015});
   const liquid=mesh(new T.CircleGeometry(1,160),liquidMat);liquid.rotation.x=-Math.PI/2;liquid.receiveShadow=false;
-  function insideRadius(y){let lo=0,hi=1;for(let k=0;k<13;k++){const t=(lo+hi)/2,s=1-t,py=s*s*s*1.1+3*s*s*t*.7+3*s*t*t*.27+t*t*t*.18;if(py>y)lo=t;else hi=t;}const t=(lo+hi)/2,s=1-t;return s*s*s*.978+3*s*s*t*.9+3*s*t*t*.65+t*t*t*.5-.003;}
+
   const surfacePositions=liquid.geometry.attributes.position;
   const meniscus=mesh(new T.TorusGeometry(1,.011,12,160),new T.MeshPhysicalMaterial({color:'#9d602f',roughness:.32,clearcoat:.4}));meniscus.rotation.x=-Math.PI/2;
   const pitcherRoot=new T.Group();model.add(pitcherRoot);const jug=new T.Group();pitcherRoot.add(jug);
-  const spout=new T.Vector3(0,.97,.625);jug.position.copy(spout).multiplyScalar(-1);
+  const spout=new T.Vector3(...SPOUT);jug.position.copy(spout).multiplyScalar(-1);
   // A double-walled, closed profile with a formed spout and rounded steel lip.
-  const jugPath=new T.Path();jugPath.moveTo(0,.02);jugPath.lineTo(.345,.02);jugPath.quadraticCurveTo(.397,.02,.398,.065);jugPath.lineTo(.433,.94);jugPath.quadraticCurveTo(.437,.975,.425,.976);jugPath.lineTo(.412,.95);jugPath.lineTo(.375,.075);jugPath.lineTo(0,.075);
-  const jg=new T.LatheGeometry(jugPath.getPoints(60),160);const pos=jg.attributes.position;
-  for(let i=0;i<pos.count;i++){const x=pos.getX(i),y=pos.getY(i),z=pos.getZ(i);const a=Math.atan2(x,z);const narrow=Math.exp(-Math.pow(a/.34,2));const top=Math.pow(clamp((y-.48)/.49),2.3);pos.setZ(i,z+narrow*top*.205);pos.setY(i,y-narrow*top*.008);}jg.computeVertexNormals();mesh(jg,steel,jug);
+  mesh(pitcherGeometry(),steel,jug);
   const rimPoints=[];for(let i=0;i<=160;i++){const a=i/160*Math.PI*2;const aa=Math.atan2(Math.sin(a),Math.cos(a));const narrow=Math.exp(-Math.pow(aa/.34,2));rimPoints.push(new T.Vector3(Math.sin(a)*.427,.97-narrow*.008,Math.cos(a)*.427+narrow*.20));}
   mesh(new T.TubeGeometry(new T.CatmullRomCurve3(rimPoints),160,.008,8,false),polished,jug);
   // A flat bent-metal handle with a rectangular cross-section.
   const hs=new T.Shape();hs.moveTo(-.427,.83);hs.bezierCurveTo(-.83,.85,-.94,.76,-.89,.58);hs.lineTo(-.70,.25);hs.quadraticCurveTo(-.62,.16,-.39,.23);hs.lineTo(-.392,.29);hs.quadraticCurveTo(-.57,.23,-.63,.30);hs.lineTo(-.81,.60);hs.quadraticCurveTo(-.91,.82,-.426,.76);hs.closePath();
   const hg=new T.ExtrudeGeometry(hs,{depth:.078,bevelEnabled:true,bevelSegments:3,steps:1,bevelSize:.009,bevelThickness:.008});
   const jhandle=mesh(hg,steel,jug);jhandle.rotation.y=-Math.PI/2;jhandle.position.x=.04;
-  const milkGeometry=new T.BufferGeometry();const milkVertices=new Float32Array(128*9);milkGeometry.setAttribute('position',new T.BufferAttribute(milkVertices,3));
+  const milkGeometry=new T.BufferGeometry();const milkVertices=new Float32Array(132*9);milkGeometry.setAttribute('position',new T.BufferAttribute(milkVertices,3));
   const jugMilk=mesh(milkGeometry,new T.MeshPhysicalMaterial({color:'#f4e9d1',roughness:.3,clearcoat:.25,side:T.DoubleSide}),jug);jugMilk.castShadow=false;
   function updateJugMilk(angle,height){
     const slope=Math.tan(angle),points=[];
@@ -88,6 +88,10 @@ export async function createScene(canvas) {
     milkGeometry.setDrawRange(0,offset/3);milkGeometry.attributes.position.needsUpdate=true;milkGeometry.computeVertexNormals();milkGeometry.computeBoundingSphere();
   }
   const stream=mesh(new T.CylinderGeometry(1,1,1,20,30,true),new T.MeshPhysicalMaterial({color:'#fff5df',roughness:.24,clearcoat:.3}));stream.visible=false;stream.castShadow=false;
+  const filmVertices=[],filmIndices=[];
+  for(let i=0;i<=12;i++){const t=i/12,w=lerp(.032,.011,t);filmVertices.push(-w,lerp(.949,SPOUT[1],t),lerp(.41,SPOUT[2],t),w,lerp(.949,SPOUT[1],t),lerp(.41,SPOUT[2],t));if(i<12){const n=i*2;filmIndices.push(n,n+1,n+2,n+1,n+3,n+2);}}
+  const filmGeometry=new T.BufferGeometry();filmGeometry.setAttribute('position',new T.Float32BufferAttribute(filmVertices,3));filmGeometry.setIndex(filmIndices);filmGeometry.computeVertexNormals();
+  const milkFilm=mesh(filmGeometry,new T.MeshPhysicalMaterial({color:'#fff5df',roughness:.24,side:T.DoubleSide}),jug);milkFilm.castShadow=false;
   const impact=mesh(new T.SphereGeometry(1,32,16),new T.MeshPhysicalMaterial({color:'#f8ebcd',roughness:.28}));impact.visible=false;impact.castShadow=false;
   const up=new T.Vector3(0,1,0),a=new T.Vector3(),b=new T.Vector3(),dir=new T.Vector3();
   const targetCamera=new T.Vector3();let cameraMoving=false,cameraView='studio';
@@ -102,31 +106,23 @@ export async function createScene(canvas) {
     const progress=preview?1:p;
     if(lastSceneProgress===progress&&lastScenePattern===pattern&&!cameraMoving){const moved=controls.update();if(moved||needsRender){renderer.render(scene,camera);needsRender=false;}return;}
     lastSceneProgress=progress;lastScenePattern=pattern;
-    const pose=pourPose(pattern,progress);
-    const baseFill=smooth(.075,.34,progress),shapeFill=smooth(.34,.925,progress);
-    const level=.78+baseFill*.19+shapeFill*.225;
-    const tilt=-.18*(1-smooth(.14,.75,progress))*(preview?0:1);
-    cup.rotation.x=tilt;cup.position.y=.14+Math.abs(tilt)*.16;
-    const heightFromCup=level-cup.position.y,centerZ=heightFromCup*Math.tan(tilt);
-    const radius=insideRadius(heightFromCup/Math.cos(tilt));
-    pose.x*=radius;pose.z*=radius;
+    const {level,tilt,y:cupY,centerZ,radius}=cupPose(progress);
+    const pose=pitcherPose(pattern,progress);
+    cup.rotation.x=tilt;cup.position.y=cupY;
+    const heightFromCup=level-cupY;
     liquid.position.set(0,level,centerZ);
     for(let i=1;i<surfacePositions.count;i++){const angle=(i-1)/160*Math.PI*2,cs=Math.cos(angle),sn=-Math.sin(angle);let r=radius;for(let n=0;n<4;n++)r=insideRadius(heightFromCup/Math.cos(tilt)+r*sn*Math.tan(tilt));surfacePositions.setXY(i,r*cs,-r*sn/Math.cos(tilt));}
     surfacePositions.needsUpdate=true;
     meniscus.visible=Math.abs(tilt)<.005;meniscus.position.copy(liquid.position);meniscus.scale.set(radius,radius,1);
-    const active=progress>=.075&&progress<.93;
-    const enter=smooth(0,.075,progress),leave=smooth(.93,1,progress);
-    const park=new T.Vector3(-1.7,.995,-.2);
-    const pour=new T.Vector3(pose.x,level+pose.height,pose.z+centerZ);
-    if(progress<.075){pitcherRoot.position.copy(park).lerp(new T.Vector3(0,level+.8,.12),enter);}
-    else if(progress>.93){pitcherRoot.position.copy(new T.Vector3(0,level+.4,.64)).lerp(park,leave);}
-    else pitcherRoot.position.copy(pour);
-    let angle=lerp(.3,.72,smooth(.075,.88,progress));if(progress<.075)angle*=enter;else if(progress>.93)angle*=1-leave;
-    pitcherRoot.rotation.set(angle,0,0);
-    if(pattern==='tulip'&&progress>.35&&progress<.8&&pose.flow===0)pitcherRoot.rotation.x-=.22;
-    updateJugMilk(pitcherRoot.rotation.x,active?.964-.625*Math.tan(pitcherRoot.rotation.x):lerp(.73,.4,smooth(.08,.93,progress)));
-    stream.visible=active&&pose.flow>.001;impact.visible=stream.visible&&progress>.33;
-    if(stream.visible){a.copy(pitcherRoot.position);b.set(pose.x,level+.002,pose.z+centerZ);dir.subVectors(a,b);stream.position.copy(a).add(b).multiplyScalar(.5);stream.scale.set(pose.flow,dir.length(),pose.flow);stream.quaternion.setFromUnitVectors(up,dir.normalize());impact.position.copy(b);impact.scale.set(pose.flow*1.4,.008,pose.flow*1.4);}
+    pitcherRoot.position.set(...pose.position);
+    pitcherRoot.rotation.set(pose.angle,0,0);
+    const active=pose.flow>.0001;
+    // Keep the interior milk continuous even when a tulip pulse stops.
+    const milkHeight=Math.min(lerp(.73,.35,smooth(.075,.93,progress)),.964-.43*Math.tan(pose.angle));
+    updateJugMilk(pose.angle,milkHeight);
+    milkFilm.visible=active;milkFilm.scale.x=clamp(pose.flow/.033,.3,1);
+    stream.visible=active;impact.visible=active&&progress>.33;
+    if(stream.visible){a.copy(pitcherRoot.position);b.set(...pose.target);b.y+=.002;dir.subVectors(a,b);stream.position.copy(a).add(b).multiplyScalar(.5);stream.scale.set(pose.flow,dir.length(),pose.flow);stream.quaternion.setFromUnitVectors(up,dir.normalize());impact.position.copy(b);impact.scale.set(pose.flow*1.4,.008,pose.flow*1.4);}
     if(lastPattern!==pattern||Math.abs(lastArt-progress)>.0013){drawArt(ctx,1024,pattern,progress,preview);liquidTexture.needsUpdate=true;lastArt=progress;lastPattern=pattern;}
     if(cameraMoving){const k=1-Math.exp(-dt*5);camera.position.lerp(targetCamera,k);controls.target.lerp(new T.Vector3(0,cameraView==='top'?0:.68,0),k);if(camera.position.distanceTo(targetCamera)<.01)cameraMoving=false;}
     controls.update();renderer.render(scene,camera);needsRender=false;

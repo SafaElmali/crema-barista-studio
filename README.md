@@ -27,6 +27,10 @@ The page exposes two feature-detected WebMCP tools (`select_latte_art`, `control
 - `dist/app.js`: lesson content and player state
 - `dist/scene.js`: model, lighting, cameras and pouring motion
 - `dist/art.js`: deterministic foam pattern diagrams and thumbnails
+- `dist/motion.js`: continuous pouring choreography, safe approach and retreat paths
+- `dist/vessel-geometry.js`: vessel meshes shared by the scene and clearance checks
+
+Run `node --test tests/motion.test.mjs` to check the pitcher against the ceramic profile and liquid surface at 1,601 times per lesson, and verify continuity at phase boundaries. The pitcher stays close to the liquid while its body tips clear of the rim. Entry and exit lift vertically before moving across the cup.
 
 ## Credits and references
 
