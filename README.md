@@ -2,7 +2,7 @@
 
 An interactive Three.js studio with guided heart, tulip and rosetta pours. Open the pattern selector, change camera angles, pause or scrub the demonstration, and use quarter-speed or half-speed playback. Each lesson has four stages and a preparation guide.
 
-[Live studio](https://crema-barista-studio-safa.netlify.app) · [GitHub repository](https://github.com/SafaElmali/crema-barista-studio)
+[Live studio](https://crema-barista-studio.netlify.app) · [GitHub repository](https://github.com/SafaElmali/crema-barista-studio)
 
 ## Run locally
 
