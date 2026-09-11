@@ -2,6 +2,8 @@
 
 An interactive Three.js studio with guided heart, tulip and rosetta pours. Open the pattern selector, change camera angles, pause or scrub the demonstration, and use quarter-speed or half-speed playback. Each lesson has four stages and a preparation guide.
 
+[Live studio](https://crema-barista-studio-safa.netlify.app) · [GitHub repository](https://github.com/SafaElmali/crema-barista-studio)
+
 ## Run locally
 
 Serve `dist` with a static server, for example:
@@ -14,7 +16,7 @@ Open http://127.0.0.1:4334/. The site has no compilation step, account requireme
 
 ## Deploy to Netlify
 
-`netlify.toml` configures the `dist` publishing directory and runs the animation clearance tests before a repository build. The project has no package dependencies. For a manual deployment from a linked checkout, run `netlify deploy --prod --dir dist`. The original owner-private Sites deployment is independent of Netlify.
+Netlify is connected to this GitHub repository. Pushes to `main` publish the production site; pull requests receive deploy previews. `netlify.toml` configures the `dist` publishing directory and runs the animation clearance tests before a repository build. The project has no package dependencies. For a manual deployment from a linked checkout, run `netlify deploy --prod --dir dist`. The original owner-private Sites deployment is independent of Netlify.
 
 ## Model and teaching approach
 
