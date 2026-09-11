@@ -16,11 +16,21 @@ for(let j=0;j<=1150;j++){
   outer[j]=xs.length?Math.max(...xs):0;inner[j]=xs.length?Math.min(...xs):0;
   if(Math.abs(y-1.097)<.020){outer[j]=Math.max(outer[j],1.026);inner[j]=inner[j]?Math.min(inner[j],.986):.986;}
 }
+
+test('separate heart pours stop flowing while repositioning',()=>{
+  const moves=[['nested-heart',.55,.59],['clover',.49,.53],['clover',.67,.71],['clover',.85,.875]];
+  for(const [pattern,start,end]of moves){
+    for(let i=0;i<=100;i++){
+      const p=start+(end-start)*i/100;
+      assert.ok(pitcherPose(pattern,p).flow<.000001,`${pattern} leaves a milk trail at ${p}`);
+    }
+  }
+});
 const samples=[];
 // Sampling across profile and azimuth covers the front belly, base and spout.
 for(let i=0;i<vertices.count;i+=3)samples.push([vertices.getX(i)-SPOUT[0],vertices.getY(i)-SPOUT[1],vertices.getZ(i)-SPOUT[2]]);
 
-for(const pattern of ['heart','tulip','rosetta']){
+for(const pattern of ['heart','tulip','rosetta','swan','nested-heart','clover']){
   test(`${pattern}: pitcher clears the ceramic and coffee throughout the animation`,()=>{
     for(let frame=0;frame<=1600;frame++){
       const p=frame/1600,cup=cupPose(p),pose=pitcherPose(pattern,p),cs=Math.cos(pose.angle),sn=Math.sin(pose.angle),cc=Math.cos(cup.tilt),sc=Math.sin(cup.tilt);
@@ -36,7 +46,7 @@ for(const pattern of ['heart','tulip','rosetta']){
     }
   });
   test(`${pattern}: continuous pose and stream at stage boundaries`,()=>{
-    const boundaries=[0,.027,.054,.075,.087,.3,.32,.35,.36,.4,.44,.79,.8,.81,.812,.832,.925,.93,.952,.979,1];
+    const boundaries=[0,.027,.054,.075,.087,.3,.32,.35,.36,.4,.44,.452,.49,.53,.55,.59,.605,.632,.64,.67,.69,.71,.73,.79,.8,.81,.812,.832,.84,.85,.875,.89,.91,.925,.93,.952,.979,1];
     for(let i=0;i<=4;i++)boundaries.push(.35+.44*i/4);
     for(const p of boundaries){
       const a=pitcherPose(pattern,Math.max(0,p-1e-7)),b=pitcherPose(pattern,Math.min(1,p+1e-7));
