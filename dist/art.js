@@ -1,4 +1,4 @@
-import {clamp, smooth, lerp, pourPose, cloverPetals, swanNeckPoint} from './motion.js';
+import {clamp, smooth, lerp, pourPose, cloverPetals} from './motion.js';
 export {clamp, smooth, lerp} from './motion.js';
 
 // The surface is a teaching illustration parameterized by the same pour clock
@@ -128,40 +128,6 @@ export function drawArt(ctx, size, pattern, p, finished = false) {
       ctx.strokeStyle=cream;ctx.lineWidth=.025;ctx.lineCap='round';ctx.beginPath();
       ctx.moveTo(0,.07);ctx.lineTo(.13*stem,lerp(.07,.62,stem));ctx.stroke();
     }
-  } else if(pattern === 'swan') {
-    const phase=clamp((progress-.35)/.29)*8;
-    const body=smooth(.35,.425,progress);
-    if(body>0){ctx.beginPath();ctx.ellipse(-.16,.35,.31*Math.sqrt(body),.135*Math.sqrt(body),-.12,0,Math.PI*2);ctx.fill();}
-    for(let i=0;i<8;i++){
-      const growth=smooth(0,.88,phase-i);if(growth<=0)continue;
-      const z=.38-i*.101,spread=[.30,.38,.39,.36,.31,.25,.17,.085][i]*Math.sqrt(growth);
-      for(const side of [-1,1]){
-        const w=spread*(side<0?1:.67);
-        ctx.beginPath();ctx.moveTo(-.22,z+.035);
-        ctx.bezierCurveTo(-.22+side*w*.6,z+.10,-.22+side*w*1.08,z+.01,-.22+side*w,z-.10);
-        ctx.bezierCurveTo(-.22+side*w*.8,z-.025,-.22+side*w*.35,z-.015,-.22,z);
-        ctx.closePath();ctx.fill();
-      }
-    }
-    const carve=smooth(.64,.71,progress);
-    if(carve>0){
-      ctx.strokeStyle=cream;ctx.lineCap='round';ctx.lineWidth=.024;ctx.beginPath();
-      ctx.moveTo(-.22,-.43);ctx.lineTo(lerp(-.22,.14,carve),lerp(-.43,.41,carve));ctx.stroke();
-    }
-    const neck=smooth(.73,.84,progress);
-    if(neck>0){
-      ctx.strokeStyle=cream;ctx.lineCap='round';
-      // Taper the neck as the pitcher travels faster toward the head.
-      for(let i=0;i<90;i++){
-        const t0=i/90,t1=Math.min((i+1)/90,neck);if(t0>=neck)break;
-        const a=swanNeckPoint(t0),b=swanNeckPoint(t1);
-        ctx.lineWidth=lerp(.092,.048,t0);ctx.beginPath();ctx.moveTo(a.x,a.z);ctx.lineTo(b.x,b.z);ctx.stroke();
-      }
-    }
-    const head=smooth(.84,.889,progress);
-    if(head>0){ctx.save();ctx.translate(.32,-.41);ctx.rotate(Math.PI/2);heart(ctx,0,0,.12*Math.sqrt(head),smooth(.89,.93,progress));ctx.restore();}
-    const beak=smooth(.89,.93,progress);
-    if(beak>0){ctx.strokeStyle=cream;ctx.lineWidth=.012;ctx.lineCap='round';ctx.beginPath();ctx.moveTo(.32,-.41);ctx.lineTo(lerp(.32,.1,beak),-.41);ctx.stroke();}
   } else if(pattern === 'rosetta') {
     const phase=clamp((progress-.35)/.44)*9;
     for(let i=0;i<9;i++){

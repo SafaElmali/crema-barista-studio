@@ -30,7 +30,7 @@ const samples=[];
 // Sampling across profile and azimuth covers the front belly, base and spout.
 for(let i=0;i<vertices.count;i+=3)samples.push([vertices.getX(i)-SPOUT[0],vertices.getY(i)-SPOUT[1],vertices.getZ(i)-SPOUT[2]]);
 
-for(const pattern of ['heart','tulip','rosetta','swan','nested-heart','clover']){
+for(const pattern of ['heart','tulip','rosetta','nested-heart','clover']){
   test(`${pattern}: pitcher clears the ceramic and coffee throughout the animation`,()=>{
     for(let frame=0;frame<=1600;frame++){
       const p=frame/1600,cup=cupPose(p),pose=pitcherPose(pattern,p),cs=Math.cos(pose.angle),sn=Math.sin(pose.angle),cc=Math.cos(cup.tilt),sc=Math.sin(cup.tilt);

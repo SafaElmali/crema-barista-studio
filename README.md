@@ -1,6 +1,6 @@
 # Crema — Latte Art Studio
 
-An interactive Three.js studio with guided heart, tulip, rosetta, swan, heart-in-a-heart and clover pours. Open the pattern selector, change camera angles, pause or scrub the demonstration, and use quarter-speed or half-speed playback. Lessons have four or five stages, individual timing and a shared preparation guide.
+An interactive Three.js studio with guided heart, tulip, rosetta, heart-in-a-heart and clover pours. Open the pattern selector, change camera angles, pause or scrub the demonstration, and use quarter-speed or half-speed playback. Lessons have four or five stages, individual timing and a shared preparation guide.
 
 [Live studio](https://crema-barista-studio.netlify.app) · [GitHub repository](https://github.com/SafaElmali/crema-barista-studio)
 
@@ -22,7 +22,7 @@ Netlify is connected to this GitHub repository. Pushes to `main` publish the pro
 
 The cup, saucer and double-walled spouted pitcher are original procedural geometry. The renderer uses image-based lighting, physical materials, a dynamic horizontal coffee surface fitted to the tilted cup, a clipped milk plane inside the pitcher, and a stream joined to the spout. The evolving latte pattern and pitcher share a deterministic clock, so seeking works in either direction.
 
-The foam patterns are illustrative, time-driven surface textures. The swan uses a rippled wing, a carved inner edge, a tapered curved neck and a heart-shaped head. The nested heart separates two pours before a shared finishing stroke. The clover places three heart-shaped leaves with closed-flow transitions and a final stem. Their drawing progress and pitcher movements share the same timeline, including backward seeking.
+The foam patterns are illustrative, time-driven surface textures. The nested heart separates two pours before a shared finishing stroke. The clover places three heart-shaped leaves with closed-flow transitions and a final stem. Their drawing progress and pitcher movements share the same timeline, including backward seeking.
 
 This is a guided demonstration of technique, not a fluid-dynamics simulation or a substitute for coached practice. Timings are for learning. A professionally filmed or physically simulated pour and review by a latte-art instructor would be appropriate for a production training course.
 
@@ -48,7 +48,6 @@ Run `node --test tests/motion.test.mjs` to check the pitcher against the ceramic
 - Heart technique: https://www.lamarzocco.com/uk/en/how-to-pour-latte-art/
 - Drawing height and flow: https://www.baristahustle.com/lesson/b1-5-02-the-second-half/
 - Heart, tulip and rosetta progression: https://www.onlinebaristatraining.com/resources/latte-art-for-beginners-how-to-pour-a-heart-tulip-rosetta/
-- Swan wing, neck and head: https://www.baristahustle.com/lesson/msla-7-01-1-latte-art-lexicon-swan-and-peacock/
 - Directional cuts for clover-like designs: https://www.baristahustle.com/lesson/la-2-07-more-advanced-brush-strokes/
 - Heart-in-a-heart lesson progression: https://www.baristahustle.com/course/latte-art/
 

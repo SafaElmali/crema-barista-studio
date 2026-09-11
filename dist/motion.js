@@ -10,14 +10,6 @@ export const cloverPetals = [
   {x: .31, z: .06, angle: Math.PI / 2, start: .53, end: .67},
   {x: 0, z: -.31, angle: 0, start: .71, end: .85}
 ];
-export function swanWingPoint(t) {
-  return {x: -.22 + Math.sin(t * Math.PI * 16) * lerp(.18, .035, t) * smooth(0, .035, t) * (1 - smooth(.95, 1, t)), z: lerp(.38, -.43, t)};
-}
-export function swanNeckPoint(t) {
-  const s = 1 - t;
-  return {x: s*s*s*.14 + 3*s*s*t*.65 + 3*s*t*t*.65 + t*t*t*.32,
-    z: s*s*s*.41 + 3*s*s*t*.39 - 3*s*t*t*.48 - t*t*t*.41};
-}
 function between(a, b, p, start, end) {
   const t = smooth(start, end, p);
   return Object.fromEntries(Object.keys(a).map(key => [key, lerp(a[key], b[key], t)]));
@@ -31,16 +23,6 @@ function detailedPour(pattern, p) {
     if (p < .59) return {...between(outer,inner,p,.55,.59), height:.12+.18*Math.sin(Math.PI*clamp((p-.55)/.04))**2,flow:0,pause:1};
     if (p < .8) return {...inner,flow:.028*smooth(.59,.605,p)};
     return {x:0,z:lerp(-.22,.65,smooth(.812,.925,p)),height:lerp(.12,.4,smooth(.8,.818,p)),flow:lerp(.028,.011,smooth(.8,.813,p))*(1-smooth(.925,.93,p)),pause:0};
-  }
-  if (pattern === 'swan') {
-    const wingStart = low(-.22,.38);
-    if (p < .35) return between({x:0,z:0,height:.8,flow:.014,pause:0},wingStart,p,.3,.35);
-    if (p < .64) return {...low(0,0),...swanWingPoint(clamp((p-.35)/.29))};
-    if (p < .71) return between(low(-.22,-.43),{x:.14,z:.41,height:.25,flow:.010,pause:0},p,.64,.71);
-    if (p < .73) return between({x:.14,z:.41,height:.25,flow:.010,pause:0},low(.14,.41,.022),p,.71,.73);
-    if (p < .84) return {...low(0,0,lerp(.022,.015,smooth(.73,.84,p))),...swanNeckPoint(smooth(.73,.84,p))};
-    if (p < .89) return low(.32,-.41,lerp(.015,.025,smooth(.84,.86,p)));
-    return between(low(.32,-.41,.025),{x:.10,z:-.41,height:.4,flow:0,pause:0},p,.89,.93);
   }
   if (pattern === 'clover') {
     const initial = low(cloverPetals[0].x,cloverPetals[0].z,0);
@@ -84,7 +66,7 @@ export function cupPose(p) {
 }
 
 export function pourPose(pattern, p) {
-  if (p >= .3 && ['swan','nested-heart','clover'].includes(pattern)) {
+  if (p >= .3 && ['nested-heart','clover'].includes(pattern)) {
     return {...detailedPour(pattern,p),draw:clamp((p-.35)/.44),cut:smooth(.812,.925,p)};
   }
   const draw = clamp((p - .35) / .44), cut = smooth(.812, .925, p);
@@ -133,7 +115,7 @@ export function pitcherPose(pattern, p) {
   angle += .035 * smooth(.44, .79, p);
   angle -= .018 * pour.pause;
   angle = lerp(angle, 1.12, smooth(.8, .832, p));
-  if (['swan','nested-heart','clover'].includes(pattern) && p >= .3) {
+  if (['nested-heart','clover'].includes(pattern) && p >= .3) {
     angle = lerp(1.47,.96,smooth(.12,.8,pour.height));
   }
 
