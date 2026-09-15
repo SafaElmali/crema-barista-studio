@@ -1,3 +1,5 @@
+[![Crema — The Latte Art Studio. A milk pitcher pouring heart-shaped latte art into an ivory cup against a warm, dark background.](docs/assets/crema-cover.png)](https://crema-barista-studio.netlify.app/)
+
 # Crema — Latte Art Studio
 
 A dark, warmly lit Night School interface around an interactive Three.js studio with guided heart, tulip, rosetta, heart-in-a-heart and clover pours. Choose a lesson using its finished-shape thumbnail, change camera angles, pause or scrub the demonstration, and use quarter-speed or half-speed playback. Lessons have four or five stages, individual timing and a shared preparation guide.
