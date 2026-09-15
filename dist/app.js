@@ -1,4 +1,4 @@
-import {createScene} from './scene.js';
+import {createScene} from './scene.js?v=night-school-3';
 import {thumbnail,clamp} from './art.js';
 
 export const lessons={
@@ -31,11 +31,11 @@ export const lessons={
 };
 const $=s=>document.querySelector(s),$$=s=>document.querySelectorAll(s);
 const state={pattern:'heart',time:0,playing:false,preview:true,speed:1,ready:false};
-const defaultBounds=[0,.3,.44,.8,1];let scene,previous=performance.now(),renderedStep=-1;
+const defaultBounds=[0,.3,.44,.8,1];let scene,previous=performance.now(),renderedStep=-1,renderedInstruction='';
 const fmt=t=>`${Math.floor(t/60)}:${String(Math.floor(t%60)).padStart(2,'0')}`;
 for(const [key,lesson]of Object.entries(lessons)){
   const b=document.createElement('button');b.className='pattern-card';b.dataset.pattern=key;b.setAttribute('aria-pressed','false');
-  b.innerHTML=`<img src="${thumbnail(key)}" alt="${lesson.short} latte art pattern"/><span><span class="pattern-name">${lesson.short}</span><span class="pattern-level">${lesson.level}</span></span><span class="pattern-check" aria-hidden="true"></span>`;
+  b.innerHTML=`<img src="${thumbnail(key)}" alt="" width="64" height="64"/><span><span class="pattern-name">${lesson.short}</span><span class="pattern-level">${lesson.level}</span></span><span class="pattern-check" aria-hidden="true"></span>`;
   b.addEventListener('click',()=>selectPattern(key));$('#patterns').append(b);
 }
 function selectPattern(key){
@@ -43,12 +43,12 @@ function selectPattern(key){
   state.pattern=key;state.time=0;state.playing=false;state.preview=true;renderedStep=-1;
   const lesson=lessons[key],bounds=lesson.bounds||defaultBounds;
   $$('.pattern-card').forEach(b=>{const on=b.dataset.pattern===key;b.classList.toggle('active',on);b.setAttribute('aria-pressed',String(on));});
-  $('#scene-name').textContent=lesson.name;$('#lesson-title').textContent=lesson.name;
+  $('#scene-name').textContent=lesson.name;$('#lesson-title').textContent=key==='nested-heart'?'The nested heart':lesson.name;
   $('#lesson-description').textContent=lesson.description;$('#lesson-number').textContent=`LESSON ${lesson.number}`;
   $('#difficulty').textContent=lesson.level;$('#duration').textContent=`${lesson.duration}s guided pour`;$('#coach-tip').textContent=lesson.tip;
   $('#timeline').max=lesson.duration;
   $('.timeline-labels').innerHTML=(lesson.labels||['BASE','GET CLOSE','SHAPE','FINISH']).map(label=>`<span>${label}</span>`).join('');
-  $('#steps').innerHTML=lesson.steps.map((s,i)=>`<button class="step" data-step="${i}" aria-label="Step ${i+1}: ${s.title}"><span class="step-index">${i+1}</span><span><span class="step-title">${s.title}</span><span class="step-description">${s.text}</span><span class="step-facts"><span>↕ ${s.height}</span><span>◌ ${s.flow}</span></span></span></button>`).join('');
+  $('#steps').innerHTML=lesson.steps.map((s,i)=>`<button class="step" data-step="${i}" aria-label="Step ${i+1}: ${s.title}"><span class="step-index">${String(i+1).padStart(2,'0')}</span><span class="step-title">${s.title}</span></button>`).join('');
   $$('.step').forEach(b=>b.addEventListener('click',()=>{const i=Number(b.dataset.step);seek((bounds[i]+bounds[i+1])*.5*lesson.duration,true);}));
   updateUI();
 }
@@ -65,9 +65,15 @@ function updateUI(){
   $('#time-display').innerHTML=`${fmt(state.time)} <span>/ ${fmt(l.duration)}</span>`;
   $('#timeline').value=state.time;$('#timeline').style.setProperty('--progress',`${p*100}%`);
   $('#timeline').setAttribute('aria-valuetext',`${fmt(state.time)} of ${fmt(l.duration)}. ${l.steps[index].title}`);
-  $('#pour-callout').hidden=state.preview;
-  $('#callout-kicker').textContent=state.time>=l.duration?'POUR COMPLETE':`${String(index+1).padStart(2,'0')} / ${l.steps[index].title.toUpperCase()}`;
-  $('#callout-text').textContent=state.time>=l.duration?'Your turn. Take it one pour at a time.':l.steps[index].cue;
+  const complete=state.time>=l.duration,instructionKey=`${state.pattern}:${index}:${state.preview}:${complete}`;
+  // Update the live region only when the instruction changes.
+  if(instructionKey!==renderedInstruction){
+    $('#callout-kicker').textContent=complete?'POUR COMPLETE':`${String(index+1).padStart(2,'0')} / ${l.steps[index].title.toUpperCase()}`;
+    $('#callout-text').textContent=complete?'Your turn at the counter.':l.steps[index].cue;
+    $('#step-detail').textContent=complete?'Take it one pour at a time. Replay a step to practice the movement, then give it a try with your next coffee.':l.steps[index].text;
+    $('#step-facts').innerHTML=complete?'<span>Pour complete</span>':`<span>↕ ${l.steps[index].height}</span><span>◌ ${l.steps[index].flow}</span>`;
+    renderedInstruction=instructionKey;
+  }
 }
 $('#play').addEventListener('click',play);
 $('#replay').addEventListener('click',()=>{if(!state.ready)return;state.time=0;state.preview=false;state.playing=true;updateUI();});

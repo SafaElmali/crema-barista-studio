@@ -1,6 +1,6 @@
 # Crema — Latte Art Studio
 
-An interactive Three.js studio with guided heart, tulip, rosetta, heart-in-a-heart and clover pours. Open the pattern selector, change camera angles, pause or scrub the demonstration, and use quarter-speed or half-speed playback. Lessons have four or five stages, individual timing and a shared preparation guide.
+A dark, warmly lit Night School interface around an interactive Three.js studio with guided heart, tulip, rosetta, heart-in-a-heart and clover pours. Choose a lesson using its finished-shape thumbnail, change camera angles, pause or scrub the demonstration, and use quarter-speed or half-speed playback. Lessons have four or five stages, individual timing and a shared preparation guide.
 
 [Live studio](https://crema-barista-studio.netlify.app) · [GitHub repository](https://github.com/SafaElmali/crema-barista-studio)
 
@@ -44,7 +44,7 @@ Run `node --test tests/motion.test.mjs` to check the pitcher against the ceramic
 
 - Three.js 0.179.1 and addons: MIT, notice in `dist/vendor/THREE-LICENSE.txt`.
 - Studio Small 08 by Sergej Majboroda, Poly Haven: https://polyhaven.com/a/studio_small_08, CC0. Reused from the existing Object Lab assets.
-- Playfair Display and DM Sans: Google Fonts, SIL Open Font License notices in `dist/assets/`.
+- Barlow Condensed, Playfair Display and DM Sans: Google Fonts, SIL Open Font License notices in `dist/assets/`.
 - Heart technique: https://www.lamarzocco.com/uk/en/how-to-pour-latte-art/
 - Drawing height and flow: https://www.baristahustle.com/lesson/b1-5-02-the-second-half/
 - Heart, tulip and rosetta progression: https://www.onlinebaristatraining.com/resources/latte-art-for-beginners-how-to-pour-a-heart-tulip-rosetta/

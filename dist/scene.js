@@ -9,24 +9,24 @@ export async function createScene(canvas) {
   const renderer = new T.WebGLRenderer({canvas,antialias:true,alpha:true,powerPreference:'high-performance'});
   renderer.setPixelRatio(Math.min(window.devicePixelRatio,2));
   renderer.outputColorSpace=T.SRGBColorSpace;
-  renderer.toneMapping=T.ACESFilmicToneMapping;renderer.toneMappingExposure=.93;
+  renderer.toneMapping=T.ACESFilmicToneMapping;renderer.toneMappingExposure=.82;
   renderer.shadowMap.enabled=true;renderer.shadowMap.type=T.VSMShadowMap;
   const scene=new T.Scene();
-  const camera=new T.PerspectiveCamera(36,1,.1,60);
+  const camera=new T.PerspectiveCamera(40,1,.1,60);
   const controls=new OrbitControls(camera,canvas);
   controls.enableDamping=true;controls.dampingFactor=.085;controls.enablePan=false;
   controls.minDistance=4.6;controls.maxDistance=10;controls.minPolarAngle=.03;controls.maxPolarAngle=1.40;
-  controls.target.set(0,.72,0);controls.enableZoom=true;
+  controls.target.set(-.22,1.2,0);controls.enableZoom=true;
   const pmrem=new T.PMREMGenerator(renderer);
   try{const hdr=await new RGBELoader().loadAsync('./assets/studio.hdr');const env=pmrem.fromEquirectangular(hdr);scene.environment=env.texture;hdr.dispose();}catch{scene.add(new T.HemisphereLight(0xffffff,0x758167,2));}
-  pmrem.dispose();scene.environmentIntensity=.85;scene.environmentRotation.y=1.2;
-  const key=new T.DirectionalLight('#fff6e5',1.8);key.position.set(-3,7,4);key.castShadow=true;
+  pmrem.dispose();scene.environmentIntensity=.48;scene.environmentRotation.y=1.2;
+  const key=new T.DirectionalLight('#ffe5c1',3.2);key.position.set(-3,7,4);key.castShadow=true;
   key.shadow.mapSize.set(2048,2048);Object.assign(key.shadow.camera,{left:-5,right:5,top:5,bottom:-5,near:.1,far:20});
   key.shadow.bias=-.00015;key.shadow.normalBias=.02;key.shadow.radius=6;key.shadow.blurSamples=12;scene.add(key);
-  const fill=new T.DirectionalLight('#e7eeff',.7);fill.position.set(4,4,-3);scene.add(fill);
-  scene.add(new T.HemisphereLight('#f9f7ed','#81876b',.35));
-  const bounce=new T.DirectionalLight('#fff0d0',.5);bounce.position.set(0,1,6);scene.add(bounce);
-  const floor=new T.Mesh(new T.PlaneGeometry(200,200),new T.ShadowMaterial({opacity:.17}));floor.rotation.x=-Math.PI/2;floor.position.y=.012;floor.receiveShadow=true;scene.add(floor);
+  const fill=new T.DirectionalLight('#dae6ff',.4);fill.position.set(4,4,-3);scene.add(fill);
+  scene.add(new T.HemisphereLight('#f9e8cc','#32271f',.25));
+  const bounce=new T.DirectionalLight('#ffe1b7',.4);bounce.position.set(0,1,6);scene.add(bounce);
+  const floor=new T.Mesh(new T.PlaneGeometry(200,200),new T.ShadowMaterial({opacity:.3}));floor.rotation.x=-Math.PI/2;floor.position.y=.012;floor.receiveShadow=true;scene.add(floor);
   // Contact shadows use a radial density texture, independent of camera angle.
   const sc=document.createElement('canvas');sc.width=sc.height=256;const sx=sc.getContext('2d');
   const grad=sx.createRadialGradient(128,128,5,128,128,128);grad.addColorStop(0,'rgba(55,48,25,.24)');grad.addColorStop(.45,'rgba(55,48,25,.14)');grad.addColorStop(1,'rgba(55,48,25,0)');sx.fillStyle=grad;sx.fillRect(0,0,256,256);
@@ -34,7 +34,7 @@ export async function createScene(canvas) {
   const micro=document.createElement('canvas');micro.width=micro.height=256;const mc=micro.getContext('2d');const mi=mc.createImageData(256,256);let seed=7;
   for(let i=0;i<mi.data.length;i+=4){seed=(seed*16807)%2147483647;const v=125+(seed%40);mi.data[i]=mi.data[i+1]=mi.data[i+2]=v;mi.data[i+3]=255;}mc.putImageData(mi,0,0);
   const bump=new T.CanvasTexture(micro);bump.wrapS=bump.wrapT=T.RepeatWrapping;bump.repeat.set(4,3);
-  const ceramic=new T.MeshPhysicalMaterial({color:'#e9e3d5',roughness:.22,metalness:0,clearcoat:.65,clearcoatRoughness:.15,bumpMap:bump,bumpScale:.011});
+  const ceramic=new T.MeshPhysicalMaterial({color:'#ded0b5',roughness:.22,metalness:0,clearcoat:.65,clearcoatRoughness:.15,bumpMap:bump,bumpScale:.011});
   const innerCeramic=new T.MeshPhysicalMaterial({color:'#fffcf0',roughness:.16,clearcoat:.65,clearcoatRoughness:.13});
   const steel=new T.MeshPhysicalMaterial({color:'#d6d8d4',metalness:1,roughness:.24,clearcoat:.45,clearcoatRoughness:.24});
   const polished=new T.MeshPhysicalMaterial({color:'#e1e3df',metalness:1,roughness:.13});
@@ -95,12 +95,13 @@ export async function createScene(canvas) {
   const impact=mesh(new T.SphereGeometry(1,32,16),new T.MeshPhysicalMaterial({color:'#f8ebcd',roughness:.28}));impact.visible=false;impact.castShadow=false;
   const up=new T.Vector3(0,1,0),a=new T.Vector3(),b=new T.Vector3(),dir=new T.Vector3();
   const targetCamera=new T.Vector3();let cameraMoving=false,cameraView='studio';
-  const views={studio:[1.7,4.6,5.6],top:[0,7.1,.01],close:[.4,3.9,3.7]};
-  function setCamera(view,instant=false){cameraView=view;targetCamera.set(...views[view]);if(view==='studio' && canvas.clientWidth<450)targetCamera.multiplyScalar(1.04);if(instant){camera.position.copy(targetCamera);controls.target.set(0,.68,0);controls.update();}else cameraMoving=true;}
+  const views={studio:[1.45,4.25,4.85],top:[0,7.1,.01],close:[.4,4.3,4.6]};
+  function setCamera(view,instant=false){cameraView=view;targetCamera.set(...views[view]);if(view==='studio' && canvas.clientWidth<450)targetCamera.multiplyScalar(1.04);if(instant){camera.position.copy(targetCamera);controls.target.set(-.22,1.2,0);controls.update();}else cameraMoving=true;}
   controls.addEventListener('start',()=>{cameraMoving=false;});
   setCamera('studio',true);
   let needsRender=true,lastSceneProgress=-1,lastScenePattern='';
-  const observer=new ResizeObserver(()=>{const {width,height}=canvas.getBoundingClientRect();if(!width||!height)return;renderer.setSize(width,height,false);camera.aspect=width/height;camera.updateProjectionMatrix();needsRender=true;});observer.observe(canvas);
+  // Preserve horizontal room for the parked pitcher on narrow screens.
+  const observer=new ResizeObserver(()=>{const {width,height}=canvas.getBoundingClientRect();if(!width||!height)return;renderer.setSize(width,height,false);camera.aspect=width/height;camera.fov=T.MathUtils.radToDeg(2*Math.atan(Math.tan(T.MathUtils.degToRad(40)/2)*Math.max(1,1.28/camera.aspect)));camera.updateProjectionMatrix();needsRender=true;});observer.observe(canvas);
   let lastArt=-1,lastPattern='';
   function update(pattern,p,preview,dt){
     const progress=preview?1:p;
@@ -124,7 +125,7 @@ export async function createScene(canvas) {
     stream.visible=active;impact.visible=active&&progress>.33;
     if(stream.visible){a.copy(pitcherRoot.position);b.set(...pose.target);b.y+=.002;dir.subVectors(a,b);stream.position.copy(a).add(b).multiplyScalar(.5);stream.scale.set(pose.flow,dir.length(),pose.flow);stream.quaternion.setFromUnitVectors(up,dir.normalize());impact.position.copy(b);impact.scale.set(pose.flow*1.4,.008,pose.flow*1.4);}
     if(lastPattern!==pattern||Math.abs(lastArt-progress)>.0013){drawArt(ctx,1024,pattern,progress,preview);liquidTexture.needsUpdate=true;lastArt=progress;lastPattern=pattern;}
-    if(cameraMoving){const k=1-Math.exp(-dt*5);camera.position.lerp(targetCamera,k);controls.target.lerp(new T.Vector3(0,cameraView==='top'?0:.68,0),k);if(camera.position.distanceTo(targetCamera)<.01)cameraMoving=false;}
+    if(cameraMoving){const k=1-Math.exp(-dt*5);camera.position.lerp(targetCamera,k);controls.target.lerp(new T.Vector3(-.22,cameraView==='top'?.5:1.2,0),k);if(camera.position.distanceTo(targetCamera)<.01)cameraMoving=false;}
     controls.update();renderer.render(scene,camera);needsRender=false;
   }
   canvas.addEventListener('webglcontextlost',e=>{e.preventDefault();document.dispatchEvent(new CustomEvent('studio-context-lost'));});
