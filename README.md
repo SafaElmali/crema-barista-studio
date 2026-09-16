@@ -14,8 +14,6 @@ https://github.com/user-attachments/assets/6d094dfd-8d50-47df-8f49-b834d8d23b8c
 
 *18 seconds · 16:9 · 1080p. Made with Remotion using Crema’s actual 3D scene and an original instrumental score. The preview shows the full heart pour and all five patterns.*
 
-[Watch or download the MP4](https://github.com/user-attachments/assets/6d094dfd-8d50-47df-8f49-b834d8d23b8c)
-
 ## Five patterns to practice
 
 | Pattern | Level | What you’ll practice | Guided pour |
