@@ -1,5 +1,5 @@
 [build]
-  command = "node --test tests/motion.test.mjs"
+  command = "npm run build && npm run lint && npm run check:seo && npm test"
   publish = "dist"
 
 [build.environment]

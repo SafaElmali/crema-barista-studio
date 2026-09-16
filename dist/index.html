@@ -4,10 +4,81 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="theme-color" content="#181613" />
-  <title>Crema — The Latte Art Studio</title>
-  <meta name="description" content="Learn the art of the pour. Explore animated 3D lessons for five patterns, from the heart and tulip to the nested heart and clover, with slow motion and step-by-step guidance." />
+  <!-- seo:head:start -->
+  <title>Learn Latte Art in 3D — Crema</title>
+  <meta name="description" content="Learn latte art with free interactive 3D lessons for heart, tulip, rosetta, nested heart and clover patterns. Pause, slow down and explore every pour." />
+  <meta name="robots" content="index, follow, max-image-preview:large" />
+  <link rel="canonical" href="https://crema-barista-studio.netlify.app/" />
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="Crema — Latte Art Studio" />
+  <meta property="og:locale" content="en_US" />
+  <meta property="og:title" content="Learn Latte Art in 3D — Crema" />
+  <meta property="og:description" content="Learn latte art with free interactive 3D lessons for heart, tulip, rosetta, nested heart and clover patterns. Pause, slow down and explore every pour." />
+  <meta property="og:url" content="https://crema-barista-studio.netlify.app/" />
+  <meta property="og:image" content="https://crema-barista-studio.netlify.app/assets/crema-cover.png" />
+  <meta property="og:image:type" content="image/png" />
+  <meta property="og:image:width" content="1672" />
+  <meta property="og:image:height" content="941" />
+  <meta property="og:image:alt" content="Crema latte art studio: a milk pitcher pouring a heart into an ivory coffee cup." />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="Learn Latte Art in 3D — Crema" />
+  <meta name="twitter:description" content="Learn latte art with free interactive 3D lessons for heart, tulip, rosetta, nested heart and clover patterns. Pause, slow down and explore every pour." />
+  <meta name="twitter:image" content="https://crema-barista-studio.netlify.app/assets/crema-cover.png" />
+  <meta name="twitter:image:alt" content="Crema latte art studio: a milk pitcher pouring a heart into an ivory coffee cup." />
+  <script type="application/ld+json">{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "WebSite",
+      "@id": "https://crema-barista-studio.netlify.app/#website",
+      "url": "https://crema-barista-studio.netlify.app/",
+      "name": "Crema — Latte Art Studio",
+      "inLanguage": "en"
+    },
+    {
+      "@type": "WebPage",
+      "@id": "https://crema-barista-studio.netlify.app/#webpage",
+      "url": "https://crema-barista-studio.netlify.app/",
+      "name": "Learn Latte Art in 3D — Crema",
+      "description": "Learn latte art with free interactive 3D lessons for heart, tulip, rosetta, nested heart and clover patterns. Pause, slow down and explore every pour.",
+      "inLanguage": "en",
+      "isPartOf": {
+        "@id": "https://crema-barista-studio.netlify.app/#website"
+      },
+      "mainEntity": {
+        "@id": "https://crema-barista-studio.netlify.app/#studio"
+      },
+      "relatedLink": "https://crema-barista-studio.netlify.app/learn/",
+      "primaryImageOfPage": {
+        "@type": "ImageObject",
+        "url": "https://crema-barista-studio.netlify.app/assets/crema-cover.png",
+        "width": 1672,
+        "height": 941
+      }
+    },
+    {
+      "@type": "WebApplication",
+      "@id": "https://crema-barista-studio.netlify.app/#studio",
+      "url": "https://crema-barista-studio.netlify.app/",
+      "name": "Crema — Latte Art Studio",
+      "description": "Learn latte art with free interactive 3D lessons for heart, tulip, rosetta, nested heart and clover patterns. Pause, slow down and explore every pour.",
+      "applicationCategory": "EducationalApplication",
+      "operatingSystem": "Any",
+      "inLanguage": "en",
+      "browserRequirements": "JavaScript and WebGL for the interactive 3D studio.",
+      "isAccessibleForFree": true,
+      "featureList": [
+        "Five guided latte art lessons",
+        "Slow-motion playback",
+        "Step-by-step instructions",
+        "Three camera views"
+      ]
+    }
+  ]
+}</script>
+  <!-- seo:head:end -->
   <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 40 40'%3E%3Crect width='40' height='40' rx='12' fill='%23181613'/%3E%3Cpath d='M20 29C2 18 13 8 20 16C27 8 38 18 20 29Z' fill='%23eeb06f'/%3E%3C/svg%3E" />
-  <link rel="stylesheet" href="./style.css?v=night-school-3" />
+  <link rel="stylesheet" href="./style.css?v=seo-guide-1" />
   <script type="importmap">{"imports":{"three":"./vendor/three.module.js"}}</script>
 </head>
 <body>
@@ -16,7 +87,7 @@
     <div class="header-center">AFTER HOURS / LATTE ART</div>
     <button class="text-button" id="open-basics">Before you pour <span aria-hidden="true">↗</span></button>
   </header>
-  <main>
+  <main id="studio">
     <nav class="patterns-panel" aria-label="Choose a latte art lesson">
       <span class="panel-label">CHOOSE YOUR POUR</span>
       <div id="patterns"></div>
@@ -26,8 +97,8 @@
         <div class="lesson-intro">
           <div class="lesson-heading"><span id="lesson-number">LESSON 01</span><span class="eyebrow">NIGHT SCHOOL</span></div>
           <h1 id="lesson-title">The heart</h1>
-          <p id="lesson-description" class="sr-only"></p>
-          <div class="lesson-meta"><span id="difficulty"></span><span id="duration"></span></div>
+          <p id="lesson-description" class="sr-only">Learn heart latte art with a guided 3D pour: build a base, lower the spout, grow a white circle, then lift and draw through.</p>
+          <div class="lesson-meta"><span id="difficulty">Beginner</span><span id="duration">26s guided pour</span></div>
         </div>
         <div class="stage" id="stage">
           <span id="scene-name" class="sr-only">The heart</span>
@@ -37,7 +108,7 @@
           <div class="stage-bottom"><span id="orbit-hint"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12a8 4 0 1 0 2-3M4 5v5h5"/></svg> Drag to explore</span><button id="reset-view" class="icon-button" aria-label="Reset camera view" title="Reset camera view"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 10a8 8 0 1 1 2 8M4 4v6h6"/></svg></button></div>
         </div>
         <div class="lesson-instruction" aria-live="polite" aria-atomic="true">
-          <div class="pour-callout" id="pour-callout"><span id="callout-kicker">YOUR FIRST POUR</span><h2 id="callout-text">Start high. Pour gently.</h2><p id="step-detail"></p><div id="step-facts" class="step-facts"></div></div>
+          <div class="pour-callout" id="pour-callout"><span id="callout-kicker">YOUR FIRST POUR</span><h2 id="callout-text">Start high. Pour gently.</h2><p id="step-detail">Tilt the cup toward the pitcher. Pour a fine stream into the center from about 7 cm up, until the cup is roughly half full.</p><div id="step-facts" class="step-facts"></div></div>
         </div>
       </div>
       <div class="player">
@@ -48,9 +119,11 @@
       <div id="steps" class="steps" role="group" aria-label="Jump to a tutorial step"></div>
     </section>
     <div class="coach-note"><span class="eyebrow">A LITTLE POURING WISDOM</span><p id="coach-tip"></p></div>
+    <section class="learn-note" aria-labelledby="learn-title"><div><h2 id="learn-title">Learn latte art, one pour at a time.</h2><p>Crema is a free interactive 3D latte art studio. Practice heart, tulip, rosetta, nested heart and clover patterns with guided steps, slow motion and different camera angles.</p></div><a href="./learn/">Read the pouring guide <span aria-hidden="true">↗</span></a></section>
+    <noscript><p>JavaScript is needed for the 3D studio. <a href="./learn/">Read all five latte art lessons and preparation tips in the written guide.</a></p></noscript>
     <footer class="studio-footer"><span>ONE CUP. FIVE WAYS TO POUR.</span><span>Take it slow. Make it yours.</span></footer>
   </main>
   <dialog id="basics"><div class="dialog-header"><span class="eyebrow">A BETTER START</span><button id="close-basics" class="icon-button" aria-label="Close preparation guide">✕</button></div><h2>Before the first pour.</h2><p class="dialog-intro">A few small details make a big difference.</p><div class="basics-grid"><section><span>01</span><h3>Set up your canvas</h3><p>Use fresh espresso in a wide, rounded cup. Give it a gentle swirl for an even crema. A 200–250 ml cup and a 350 ml pitcher are a practical starting setup.</p></section><section><span>02</span><h3>Make silky microfoam</h3><p>Start with cold milk. Add a little air, then keep the milk circulating to integrate the bubbles. Aim for glossy, fluid milk with no dry foam cap. Swirl and pour promptly.</p></section><section><span>03</span><h3>Hold, tilt, level</h3><p>Tilt the cup toward your pitcher to reach the surface. As the drink fills, gradually bring the cup level. Keep the spout aligned with the center of your design.</p></section><section><span>04</span><h3>Let height do the work</h3><p>A higher, narrow stream blends into espresso. A spout within 1 cm of the surface lets white foam spread. Lift and thin the stream to finish your design.</p></section></div><div class="troubleshooting"><h3>If your pour isn’t quite there</h3><p><b>No white pattern?</b> Lower the spout and check your milk texture.</p><p><b>A thick white blob?</b> Use less air when steaming; keep the milk moving.</p><p><b>No sharp point?</b> Lift before you draw the final thin line through.</p></div><div class="source-note">These are guided 3D demonstrations of pitcher technique; actual milk flow varies with texture, cup angle and practice. Animation timing is for learning.<br><br>Technique references: <a href="https://www.lamarzocco.com/uk/en/how-to-pour-latte-art/" target="_blank" rel="noopener noreferrer">La Marzocco</a>, <a href="https://www.baristahustle.com/lesson/b1-5-02-the-second-half/" target="_blank" rel="noopener noreferrer">Barista Hustle</a> and <a href="https://www.onlinebaristatraining.com/resources/latte-art-for-beginners-how-to-pour-a-heart-tulip-rosetta/" target="_blank" rel="noopener noreferrer">Online Barista Training</a>. For the clover: <a href="https://www.baristahustle.com/lesson/la-2-07-more-advanced-brush-strokes/" target="_blank" rel="noopener noreferrer">directional cuts</a>.</div></dialog>
-  <script type="module" src="./app.js?v=night-school-3"></script>
+  <script type="module" src="./app.js?v=seo-guide-1"></script>
 </body>
 </html>

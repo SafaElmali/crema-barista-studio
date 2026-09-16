@@ -45,7 +45,23 @@ cd crema-barista-studio
 python3 -m http.server 4334 --bind 127.0.0.1 --directory dist
 ```
 
-Open [localhost:4334](http://127.0.0.1:4334/) in a browser with WebGL support. Fonts, lighting, and runtime libraries are served from this repository.
+Open [localhost:4334](http://127.0.0.1:4334/) in a browser with WebGL support. Fonts, lighting, and runtime libraries are served from this repository. The [written pouring guide](https://crema-barista-studio.netlify.app/learn/) works without JavaScript or WebGL.
+
+### Search and AI discoverability
+
+The studio and written guide include canonical URLs, Open Graph and Twitter cards, and JSON-LD describing the application and visible lessons. The guide provides the full instructions, preparation tips, common questions and technique references as static HTML. Each lesson links directly to its 3D animation.
+
+`dist/lessons.js` is the shared source for the studio, written lesson steps and structured instructions. After editing lessons or the content in `scripts/generate-seo.mjs`, regenerate the checked-in pages and discovery files:
+
+```sh
+npm run build
+npm run lint
+npm run check:seo
+```
+
+The generator also creates `robots.txt`, a sitemap containing the two canonical pages, and `llms.txt`, a concise guide for tools that support that convention. It copies the existing README cover into the published assets for social previews. `llms.txt` is supplemental; it does not guarantee AI citations or search ranking. The content approach follows [Google's guidance for AI features](https://developers.google.com/search/docs/appearance/ai-features).
+
+The canonical production origin is configured in `scripts/generate-seo.mjs`. If the site moves domains, update it and run the build. Generated assets are committed so the site can still be served directly from `dist`; Netlify regenerates and validates them on deploy.
 
 ### Check the animation
 
@@ -59,7 +75,7 @@ The checks sample each lesson at 1,601 points to check pitcher clearance from th
 
 ### Deploy to Netlify
 
-The repository is connected to [the live Netlify site](https://crema-barista-studio.netlify.app/). Pushes to `main` publish production updates. [netlify.toml](netlify.toml) runs the motion checks and publishes `dist`.
+The repository is connected to [the live Netlify site](https://crema-barista-studio.netlify.app/). Pushes to `main` publish production updates. [netlify.toml](netlify.toml) generates the SEO assets, runs JavaScript syntax, SEO and motion checks, and publishes `dist`.
 
 For a manual deployment from a linked checkout with the Netlify CLI installed:
 
@@ -82,7 +98,11 @@ The patterns are illustrated surface textures. Crema demonstrates pouring techni
 | --- | --- |
 | [dist/index.html](dist/index.html) | Interface, metadata, and preparation guide |
 | [dist/style.css](dist/style.css) | Responsive Night School layout and typography |
-| [dist/app.js](dist/app.js) | Lessons, playback state, and controls |
+| [dist/app.js](dist/app.js) | Playback state, lesson links, and controls |
+| [dist/lessons.js](dist/lessons.js) | Shared lesson content for the studio and written guide |
+| [dist/learn/index.html](dist/learn/index.html) | Static written lessons, preparation, questions, and references |
+| [scripts/generate-seo.mjs](scripts/generate-seo.mjs) | Metadata, structured data, written guide, sitemap, and AI summary generation |
+| [tests/seo.test.mjs](tests/seo.test.mjs) | Published metadata, links, assets, and lesson consistency checks |
 | [dist/scene.js](dist/scene.js) | 3D scene, materials, lighting, and cameras |
 | [dist/art.js](dist/art.js) | Foam patterns and lesson thumbnails |
 | [dist/motion.js](dist/motion.js) | Pouring choreography and approach/retreat paths |

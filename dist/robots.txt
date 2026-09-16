@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://crema-barista-studio.netlify.app/sitemap.xml

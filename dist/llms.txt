@@ -1,0 +1,29 @@
+# Crema — Latte Art Studio
+
+> Crema is a free, browser-based 3D latte art learning studio. It teaches heart, tulip, rosetta, nested heart and clover through guided pitcher animations and written instructions. No account is required.
+
+## Pages
+
+- [Interactive studio](https://crema-barista-studio.netlify.app/): Choose a pattern, play or pause, scrub the timeline, use 1×, ½× or ¼× speed, and switch among Studio, Top view and Close-up cameras.
+- [Written latte art guide](https://crema-barista-studio.netlify.app/learn/): All five lessons, milk preparation, troubleshooting and technique references. Accessible without JavaScript or WebGL.
+
+## Lessons
+
+- [Heart](https://crema-barista-studio.netlify.app/learn/#heart): Beginner; 26-second guided animation. The first pour to fall in love with. Learn the foundation of every great pattern.
+- [Tulip](https://crema-barista-studio.netlify.app/learn/#tulip): Intermediate; 32-second guided animation. A flower, built one petal at a time. Learn to pause, push, and stack your pours.
+- [Rosetta](https://crema-barista-studio.netlify.app/learn/#rosetta): Advanced; 34-second guided animation. Find the rhythm in your wrist. A delicate fern made with one flowing movement.
+- [Nested heart](https://crema-barista-studio.netlify.app/learn/#nested-heart): Intermediate; 36-second guided animation. A little heart held inside a larger one. Practice two pours with a delicate border of crema between them.
+- [Clover](https://crema-barista-studio.netlify.app/learn/#clover): Intermediate; 42-second guided animation. Three small hearts become a lucky clover. Learn to place separate pours and direct their points toward the center.
+
+## Scope
+
+The interactive studio requires JavaScript and WebGL. Crema illustrates pitcher technique and foam patterns; it does not simulate fluid dynamics. Animation durations are teaching timings, not prescribed real-world pouring times. Actual results depend on milk texture, cup angle and practice.
+
+## Technique references
+
+- [La Marzocco: How to pour latte art](https://www.lamarzocco.com/uk/en/how-to-pour-latte-art/)
+- [Barista Hustle: Drawing height and flow](https://www.baristahustle.com/lesson/b1-5-02-the-second-half/)
+- [Online Barista Training: Heart, tulip and rosetta](https://www.onlinebaristatraining.com/resources/latte-art-for-beginners-how-to-pour-a-heart-tulip-rosetta/)
+- [Barista Hustle: Directional brush strokes](https://www.baristahustle.com/lesson/la-2-07-more-advanced-brush-strokes/)
+
+Lesson explanations are original summaries. Crema is not affiliated with these educators.

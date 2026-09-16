@@ -4,6 +4,9 @@
   "private": true,
   "type": "module",
   "scripts": {
+    "build": "node scripts/generate-seo.mjs",
+    "lint": "node --check dist/app.js && node --check dist/lessons.js && node --check scripts/generate-seo.mjs && node --check tests/seo.test.mjs",
+    "check:seo": "node scripts/generate-seo.mjs --check && node --test tests/seo.test.mjs",
     "test": "node --test tests/motion.test.mjs"
   },
   "engines": {
